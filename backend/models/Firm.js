@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const Vendor = require('./Vendor');
 
 const firmSchema = new mongoose.Schema({
     firmName:{
@@ -24,13 +23,14 @@ const firmSchema = new mongoose.Schema({
         }]
     },
     offer:{
+        type: String
     },
     image:{
         type: String
     },
-    Vendor:[{
+    vendor:[{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'vendor'
+        ref: 'Vendor'
     }]
 })
 

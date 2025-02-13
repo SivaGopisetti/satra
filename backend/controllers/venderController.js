@@ -39,9 +39,18 @@ const vendorLogin = async(req, res)=>{
 
         res.status(200).json({success : "loging sucessfully",token});
     }catch(error){
-        console.log(error);
+    console.log(error);
     res.status(500).json({ error: "Internal server error" });
 
     }
 }
-module.exports = {vendorRegister,vendorLogin }
+
+const getAllVendors = async()=>{
+    try {
+        const vendors = await Vendor.find().populate('firm');
+        res.json({vendors})
+    } catch (error) {
+        res.status(500).json({message: "Internal server error"})
+    }
+}
+module.exports = {vendorRegister,vendorLogin,getAllVendors }

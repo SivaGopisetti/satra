@@ -2,13 +2,14 @@ const Vendor = require('../models/Vendor');
 const jwt = require('jsonwebtoken');
 const dotEnv = require('dotenv')
 
+dotEnv.config()
 const seceretKey = process.env.TOKEN_KEY;
 
 const verifyToken = async(req, res, next) => {
     const token = req.headers.token;
 
     if(!token){
-        return res.status(401).json({error: "token is not valid"});
+        return res.status(401).json({error: "Token is not valid"});
     }
 
     try{

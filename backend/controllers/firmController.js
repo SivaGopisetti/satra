@@ -1,5 +1,5 @@
 const Firm = require('../models/Firm');
-const vendor = require('../models/Vendor'); 
+const Vendor = require('../models/Vendor');
 const multer =  require('multer');
 
 
@@ -17,18 +17,21 @@ const  upload = multer({storage: storage})
 
 const addFirm = async(req, res)=>{
     try {
-        const {firmName, area,category, region, offer} = req.body;
+    const {firmName, area,category, region, offer} = req.body;
     const image = req.file? req.file.filename: undefined;
     
     const vendor = await Vendor.findById(req.vendorId);
         if(!vendor){
             res.status(404).json({message: "vendor not found"})
         }
-    const firm = new firm({
-        firmName, area,category, region, offer, image, vendor:vendor.I
+    const firm = new Firm({
+        firmName, area,category, region, offer, image, vendor:vendor._id
     })
-    await firm.save();
+    const savedFirm = await firm.save();
 
+    vendor.firm.push(savedFirm)
+
+    await vendor.save();
     return res.status(200).json({message: "firm added successfully"})
     } catch (error) {
        console.error(error);
