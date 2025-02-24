@@ -1,6 +1,7 @@
 const Firm = require('../models/Firm');
 const Vendor = require('../models/Vendor');
 const multer =  require('multer');
+const path = require('path');
 
 
 const storage = multer.diskStorage({
@@ -8,7 +9,7 @@ const storage = multer.diskStorage({
         cb(null,'uploads/');
     },
     filename: function(req,file, cb){
-        cb(null, Date.now() + '_' + file.originalname)
+        cb(null, Date.now() + path.extName(file.originalname))
     }
 })
 
@@ -28,16 +29,31 @@ const addFirm = async(req, res)=>{
         firmName, area,category, region, offer, image, vendor:vendor._id
     })
     const savedFirm = await firm.save();
-
-    vendor.firm.push(savedFirm)
-
+    const firmId = savedFirm._id
     await vendor.save();
-    return res.status(200).json({message: "firm added successfully"})
-    } catch (error) {
+    const vendorFirmName = savedFirm.firmName
+    vendor.firm.push(savedFirm)
+    return res.status(200).json({ message: 'Firm Added successfully ', firmId, vendorFirmName });
+} catch (error) {
        console.error(error);
        res.status(500).json('internal server error')
     }
 
 }
 
-module.exports = {addFirm:[upload.single('image'),addFirm]}
+const deleteFirmById = async(req, res) =>{
+    try {
+        const firmId = req.params.findById;
+        const  deleteFirm = await Firm.findById(firmId);
+    
+        if(!deleteFirm){
+            return res.status(404).json({error: "no firm found"});
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({error: "internal Server error"}) 
+    }
+   
+}
+
+module.exports = {addFirm:[upload.single('image'),addFirm],deleteFirmById}
